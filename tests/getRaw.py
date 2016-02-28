@@ -31,7 +31,7 @@ class GetRawTestCase(unittest.TestCase):
 
     def setUp(self):
         self.datadir = os.getenv("TESTDATA_WHIRC_DIR")
-        assert self.datadir, "testdata_whirc is not setup"
+        assert os.path.exists(self.datadir), "testdata_whirc is not setup"
         self.butler = getButler(self.datadir)
         self.size = (2144, 2050)
         self.dataId = {'date': 20111115,
