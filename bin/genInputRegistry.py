@@ -11,9 +11,9 @@ import re
 import sqlite3 as sqlite
 import sys
 import datetime
-import lsst.daf.base   as dafBase
+import lsst.daf.base as dafBase
 import lsst.pex.policy as pexPolicy
-import lsst.afw.image  as afwImage
+import lsst.afw.image as afwImage
 
 
 import argparse
@@ -47,7 +47,7 @@ if makeTables:
     conn.commit()
 
 for fits in files:
-    matches = re.search(r"(\S+)/(\d{4})(\d{2})(\d{2})/(dark|flat|obj)_([JHK]_|)(\d{3})\.fits", fits) 
+    matches = re.search(r"(\S+)/(\d{4})(\d{2})(\d{2})/(dark|flat|obj)_([JHK]_|)(\d{3})\.fits", fits)
     if not matches:
         print >>sys.stderr, "Warning: skipping unrecognized filename:", fits
         continue
@@ -60,33 +60,33 @@ for fits in files:
     date = year+month+day
 
     field = None
-    year  = int(year)
+    year = int(year)
     month = int(month)
-    day   = int(day)
+    day = int(day)
     expnum = int(expnum)
-    
+
     # Extract filter information from header
     im = afwImage.ExposureF(fits)
     h = im.getMetadata()
     mjd = h.get('MJD-OBS')
-    filt1 = h.get('FILTER1').strip() 
-    filt2 = h.get('FILTER2').strip() 
+    filt1 = h.get('FILTER1').strip()
+    filt2 = h.get('FILTER2').strip()
     filt = filt1  # We're using the FILTER1 wheel.  Ignore 'FILTER2' which should always say 'OPEN'
     observer = h.get('OBSERVER').strip()
     ra = h.get('RA').strip()
-    dec= h.get('DEC').strip() 
+    dec = h.get('DEC').strip()
     airmass = h.get('AIRMASS')
     focus = h.get('FOCUS')
     recid = h.get('RECID').strip()
 
     dateobsstr = h.get('DATE-OBS')
-    
+
     dateObs = (datetime.datetime(year, month, day)).isoformat()
 
     try:
         conn.execute("INSERT INTO raw VALUES (NULL, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
                      (field, year, month, day, mjd,
-                      expnum, filt, filt1, filt2, 
+                      expnum, filt, filt1, filt2,
                       observer, ra, dec, airmass, focus,
                       fits, recid,
                       date, dateObs))

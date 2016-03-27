@@ -14,7 +14,9 @@ import lsst.afw.image.utils as afwImageUtils
 from lsst.daf.butlerUtils import CameraMapper, exposureFromImage
 import lsst.pex.policy as pexPolicy
 
+
 class WhircMapper(CameraMapper):
+
     def __init__(self, outputRoot=None, **kwargs):
         policyFile = pexPolicy.DefaultPolicyFile("obs_wiyn", "WhircMapper.paf", "policy")
         policy = pexPolicy.Policy(policyFile)
@@ -22,8 +24,8 @@ class WhircMapper(CameraMapper):
         super(WhircMapper, self).__init__(policy, policyFile.getRepositoryPath(), **kwargs)
 
         afwImageUtils.defineFilter('OPEN', lambdaEff=1750)  # nm
-        afwImageUtils.defineFilter('J' , lambdaEff=1250)
-        afwImageUtils.defineFilter('H' , lambdaEff=1650)
+        afwImageUtils.defineFilter('J', lambdaEff=1250)
+        afwImageUtils.defineFilter('H', lambdaEff=1650)
         afwImageUtils.defineFilter('KS', lambdaEff=2175, alias=['Ks'])
 
     def _defectLookup(self, dataId, ccdSerial):
@@ -32,7 +34,7 @@ class WhircMapper(CameraMapper):
         @param ccdSerial (string) CCD serial number
         @return (string) path to the defects file or None if not available
         """
-        return None # XXX FIXME
+        return None  # XXX FIXME
 
     def _computeCcdExposureId(self, dataId):
         """Compute the 64-bit (long) identifier for a CCD exposure.
@@ -41,16 +43,16 @@ class WhircMapper(CameraMapper):
         """
         pathId = self._transformId(dataId)
         year = pathId['year']
-        mon  = pathId['month']
-        sod  = pathId['day']
-        ccd  = pathId['obsnum']
-        return 0 # XXX FIXME
+        mon = pathId['month']
+        sod = pathId['day']
+        ccd = pathId['obsnum']
+        return 0  # XXX FIXME
 
     def bypass_ccdExposureId(self, datasetType, pythonType, location, dataId):
         return self._computeCcdExposureId(dataId)
 
     def bypass_ccdExposureId_bits(self, datasetType, pythonType, location, dataId):
-        return 32 # not really, but this leaves plenty of space for sources
+        return 32  # not really, but this leaves plenty of space for sources
 
     def _extractDetectorName(self, dataId):
         return "VIRGO1"
@@ -67,7 +69,7 @@ class WhircMapper(CameraMapper):
         return self._computeStackExposureId(dataId)
 
     def bypass_stackExposureId_bits(self, datasetType, pythonType, location, dataId):
-        return 32 # not really, but this leaves plenty of space for sources
+        return 32  # not really, but this leaves plenty of space for sources
 
     def _setTimes(self, mapping, item, dataId):
         """Set the exposure time and exposure midpoint in the calib object in an Exposure.
@@ -78,9 +80,9 @@ class WhircMapper(CameraMapper):
         """
 
         year = dataId['year']
-        mon  = dataId['month']
-        day  = dataId['day']
-        mjd  = dataId['mjd']
+        mon = dataId['month']
+        day = dataId['day']
+        mjd = dataId['mjd']
 
         exptime = dataId['exptime']
 

@@ -23,6 +23,7 @@ parser.add_argument("-l", "--link", action="store_true", default=False,
                     help="Link instead of move the files?")
 parser.add_argument("files", nargs="+", help="Names of file")
 
+
 def getFrameInfo(filename):
     filename = os.path.basename(filename)
     year, doy, frac = re.search(r"(\d{4})(\d{3})_(\d{6})", filename).groups()
@@ -30,8 +31,7 @@ def getFrameInfo(filename):
     #hours = int(frac*24/10**6)
     #sec = frac*86400/10**6 - hours*3600
 
-    date = (datetime.date(int(year), 1, 1) + datetime.timedelta(days=int(doy)-1)).isoformat()    
-
+    date = (datetime.date(int(year), 1, 1) + datetime.timedelta(days=int(doy)-1)).isoformat()
 
     return {'year': year,
             'doy': doy,
@@ -39,10 +39,12 @@ def getFrameInfo(filename):
             'date': date,
             }
 
+
 def getFinalFile(root, field, filename):
     """ Return the final filename from the passed in info dictionary. """
     info = getFrameInfo(filename)
     return os.path.join(root, field, info['date'], os.path.basename(filename))
+
 
 def main():
     args = parser.parse_args()
@@ -55,7 +57,7 @@ def main():
         outfile = getFinalFile(args.root, args.field, infile)
 
         if args.execute:
-            # Actually do the moves. 
+            # Actually do the moves.
             outdir = os.path.dirname(outfile)
             try:
                 if not os.path.isdir(outdir):
@@ -71,7 +73,7 @@ def main():
                     print "moved %s to %s" % (infile, outfile)
             except Exception, e:
                 sys.stderr.write("failed to move or copy %s to %s: %s\n" % (infile, outfile, e))
-        else:        
+        else:
             print infile, outfile
 
 if __name__ == "__main__":

@@ -9,13 +9,13 @@ import math
 import datetime
 import collections
 
-import lsst.daf.base   as dafBase
-import lsst.afw.image  as afwImage
+import lsst.daf.base as dafBase
+import lsst.afw.image as afwImage
 
 import argparse
 
 parser = argparse.ArgumentParser()
-parser.add_argument("--create", default=False, action="store_true", 
+parser.add_argument("--create", default=False, action="store_true",
                     help="Create new registry (clobber old)?")
 parser.add_argument("--root", default=".", help="Root directory")
 parser.add_argument("--validity", type=int, default=30, help="Calibration validity (days)")
@@ -61,11 +61,11 @@ for calib in ('bias', 'dark', 'flat', 'fringe'):
                                                        row.calibDate + validity]) for row in rows])
     dates = valids.keys()
     numDates = len(dates)
-    midpoints = [ t1 + (t2 - t1)//2 for t1, t2 in zip(dates[:numDates-1], dates[1:]) ]
+    midpoints = [t1 + (t2 - t1)//2 for t1, t2 in zip(dates[:numDates-1], dates[1:])]
     for i, (date, midpoint) in enumerate(zip(dates[:numDates-1], midpoints)):
         if valids[date][1] > midpoint:
             nextDate = dates[i+1]
-            #print "Adjusting: %d %s --> %s : %s vs %s" % (i, date, nextDate, valids[date][1], midpoint)
+            # print "Adjusting: %d %s --> %s : %s vs %s" % (i, date, nextDate, valids[date][1], midpoint)
             valids[nextDate][0] = midpoint
             valids[date][1] = midpoint
     del midpoints
@@ -80,7 +80,7 @@ for calib in ('bias', 'dark', 'flat', 'fringe'):
 
         conn.execute("INSERT INTO " + calib.lower() + " VALUES (NULL, ?, ?, ?, ?, ?)",
                      (validStart, validEnd, calibDate, row.calibVersion, row.ccd))
-        
+
 
 conn.commit()
 conn.close()
